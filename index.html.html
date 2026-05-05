@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Siddharth Bhalla — Adventure Filmmaker & Video Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #E8A427;
+  --gold-soft: rgba(232,164,39,0.09);
+  --gold-line: rgba(232,164,39,0.2);
+  --bg: #090806;
+  --bg2: #0f0e0b;
+  --bg3: #161410;
+  --text: #EDE8DC;
+  --muted: #6B6660;
+  --muted2: #9A9490;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-size: 256px;
+  pointer-events: none;
+  z-index: 900;
+}
+
+/* SCROLL PROGRESS BAR */
+#progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--gold);
+  z-index: 999;
+  transition: width 0.08s linear;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem 3.5rem;
+  transition: background 0.4s, border-color 0.4s;
+}
+
+nav.scrolled {
+  background: rgba(9,8,6,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gold-line);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.4rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0; right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transition: transform 0.25s;
+}
+
+.nav-links a:hover, .nav-links a.active { color: var(--gold); }
+.nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 3.5rem 5.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orb-a {
+  width: 60vw; height: 60vw;
+  top: -15%; right: -10%;
+  background: radial-gradient(circle, rgba(232,164,39,0.055) 0%, transparent 65%);
+}
+
+.orb-b {
+  width: 30vw; height: 30vw;
+  bottom: 10%; left: -4%;
+  background: radial-gradient(circle, rgba(232,164,39,0.035) 0%, transparent 65%);
+}
+
+.hero-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  animation: slideUp 0.9s 0.2s forwards;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 36px; height: 1px;
+  background: var(--gold);
+}
+
+.hero h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5.5rem, 14vw, 12rem);
+  line-height: 0.86;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  opacity: 0;
+  animation: slideUp 1s 0.4s forwards;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-tagline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 2rem 0 3rem;
+  opacity: 0;
+  animation: slideUp 1s 0.6s forwards;
+}
+
+.hero-tagline span { margin: 0 0.5rem; color: var(--gold-line); }
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  opacity: 0;
+  animation: slideUp 1s 0.8s forwards;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.78rem 2.1rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.22s, color 0.22s;
+}
+
+.btn:hover { background: var(--gold); color: var(--bg); }
+
+.btn-ghost {
+  border-color: var(--gold-line);
+  color: var(--muted2);
+}
+
+.btn-ghost:hover {
+  border-color: var(--gold);
+  background: transparent;
+  color: var(--gold);
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  right: 3.5rem;
+  bottom: 5.5rem;
+  writing-mode: vertical-rl;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.67rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  animation: fadeIn 1.2s 1.3s forwards;
+}
+
+.hero-scroll-hint::after {
+  content: '';
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+
+/* STATS STRIP */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--gold-line);
+  background: var(--bg2);
+}
+
+.stat {
+  padding: 2.8rem;
+  border-right: 1px solid var(--gold-line);
+  transition: background 0.28s;
+}
+
+.stat:last-child { border-right: none; }
+.stat:hover { background: var(--gold-soft); }
+
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.4rem;
+  line-height: 1;
+  color: var(--gold);
+  display: block;
+}
+
+.stat-lbl {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.45rem;
+  display: block;
+}
+
+/* SECTION BASE */
+.section { padding: 8rem 3.5rem; }
+
+.eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--gold);
+}
+
+.sec-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  letter-spacing: 0.03em;
+  line-height: 0.92;
+  color: var(--text);
+  margin-bottom: 3.5rem;
+}
+
+/* ABOUT */
+.about-wrap {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 7rem;
+  align-items: start;
+}
+
+.about-sticky {
+  position: sticky;
+  top: 6rem;
+}
+
+.about-body p {
+  font-size: 1rem;
+  color: rgba(237,232,220,0.65);
+  line-height: 1.9;
+  margin-bottom: 1.5rem;
+}
+
+.about-body p strong { color: var(--text); font-weight: 600; }
+.about-body p:last-child { margin-bottom: 0; }
+
+/* SHOWREEL */
+.showreel-wrap {
+  background: var(--bg2);
+  padding: 7rem 3.5rem;
+  position: relative;
+}
+
+.showreel-wrap::before,
+.showreel-wrap::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-line) 30%, var(--gold-line) 70%, transparent);
+}
+
+.showreel-wrap::before { top: 0; }
+.showreel-wrap::after { bottom: 0; }
+
+.showreel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.showreel-header .sec-title { margin-bottom: 0; }
+
+.video-frame {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  border: 1px solid var(--gold-line);
+}
+
+.video-frame iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+}
+
+.channel-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 2.5rem;
+}
+
+.channel-cta span {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.channel-cta a {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.channel-cta a:hover { color: var(--gold); }
+
+.channel-cta::before, .channel-cta::after {
+  content: '';
+  flex: 1;
+  max-width: 100px;
+  height: 1px;
+  background: var(--gold-line);
+}
+
+/* SKILLS */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--gold-line);
+  border: 1px solid var(--gold-line);
+}
+
+.skill-card {
+  background: var(--bg);
+  padding: 2.4rem 2rem 2.6rem;
+  transition: background 0.28s;
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card::before {
+  content: attr(data-num);
+  position: absolute;
+  top: 1rem; right: 1.4rem;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgba(232,164,39,0.04);
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.skill-card:hover { background: var(--bg3); }
+.skill-card:hover::before { color: rgba(232,164,39,0.08); }
+
+.sk-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.sk-desc {
+  font-size: 0.88rem;
+  color: var(--muted2);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(232,164,39,0.45);
+  border: 1px solid rgba(232,164,39,0.16);
+  padding: 0.18rem 0.6rem;
+}
+
+/* EXPERIENCE */
+.exp-section { background: var(--bg2); }
+
+.exp-list { position: relative; }
+
+.exp-list::before {
+  content: '';
+  position: absolute;
+  left: 190px;
+  top: 1rem; bottom: 1rem;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold-line), transparent 90%);
+}
+
+.exp-row {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  padding: 3rem 0;
+  position: relative;
+}
+
+.exp-row + .exp-row { border-top: 1px solid rgba(232,164,39,0.07); }
+
+.exp-meta { padding-right: 2.5rem; padding-top: 0.2rem; }
+
+.exp-date {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.exp-type {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exp-dot {
+  position: absolute;
+  left: 183px;
+  top: 3.4rem;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exp-dot::after {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.exp-body { padding-left: 3rem; }
+
+.exp-role {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.exp-company {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+.exp-points { list-style: none; }
+
+.exp-points li {
+  font-size: 0.9rem;
+  color: rgba(237,232,220,0.58);
+  line-height: 1.8;
+  padding-left: 1.2rem;
+  position: relative;
+  margin-bottom: 0.15rem;
+}
+
+.exp-points li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: rgba(232,164,39,0.35);
+}
+
+/* CONTACT */
+.contact-section { text-align: center; }
+
+.contact-section .eyebrow { justify-content: center; }
+.contact-section .eyebrow::before { display: none; }
+.contact-section .sec-title { margin-bottom: 1rem; }
+
+.contact-sub {
+  font-size: 0.95rem;
+  color: var(--muted2);
+  max-width: 420px;
+  margin: 0 auto 3.5rem;
+  line-height: 1.8;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 880px;
+  margin: 0 auto;
+  gap: 1px;
+  background: var(--gold-line);
+  border: 1px solid var(--gold-line);
+}
+
+.cc {
+  display: block;
+  background: var(--bg);
+  padding: 2rem 1.6rem;
+  text-decoration: none;
+  transition: background 0.25s;
+  text-align: left;
+}
+
+.cc:hover { background: var(--bg3); }
+
+.cc-type {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.cc-val {
+  font-size: 0.86rem;
+  color: var(--gold);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+/* FOOTER */
+footer {
+  padding: 1.6rem 3.5rem;
+  border-top: 1px solid var(--gold-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer p {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ANIMATIONS */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+.d1 { transition-delay: 0.1s; }
+.d2 { transition-delay: 0.2s; }
+.d3 { transition-delay: 0.3s; }
+.d4 { transition-delay: 0.4s; }
+.d5 { transition-delay: 0.5s; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  nav { padding: 1.2rem 1.6rem; }
+  .nav-links { display: none; }
+  .hero { padding: 0 1.6rem 4rem; }
+  .section { padding: 5rem 1.6rem; }
+  .showreel-wrap { padding: 5rem 1.6rem; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .about-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+  .about-sticky { position: static; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .exp-list::before { display: none; }
+  .exp-row { grid-template-columns: 1fr; padding: 2rem 0; }
+  .exp-dot { display: none; }
+  .exp-body { padding-left: 0; }
+  .exp-meta { padding-right: 0; margin-bottom: 0.5rem; }
+  .contact-grid { grid-template-columns: repeat(2, 1fr); }
+  .showreel-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  footer { flex-direction: column; gap: 0.4rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav id="nav">
+  <a class="nav-logo" href="#">SiD On Wheels</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-orb orb-a"></div>
+  <div class="hero-orb orb-b"></div>
+  <div class="hero-eyebrow">Adventure Filmmaker &amp; Video Editor</div>
+  <h1>SIDDHARTH<em>BHALLA</em></h1>
+  <p class="hero-tagline">Man <span>·</span> Machine <span>·</span> Miles</p>
+  <div class="hero-actions">
+    <a href="#work" class="btn">View Showreel ↓</a>
+    <a href="#contact" class="btn btn-ghost">Hire Me</a>
+  </div>
+  <span class="hero-scroll-hint">Scroll to explore</span>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat reveal">
+    <span class="stat-num">566</span>
+    <span class="stat-lbl">Videos Produced</span>
+  </div>
+  <div class="stat reveal d1">
+    <span class="stat-num">8.81L</span>
+    <span class="stat-lbl">Lifetime Views</span>
+  </div>
+  <div class="stat reveal d2">
+    <span class="stat-num">2,500</span>
+    <span class="stat-lbl">Subscribers</span>
+  </div>
+  <div class="stat reveal d3">
+    <span class="stat-num">5+</span>
+    <span class="stat-lbl">Years in the Field</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="about-wrap">
+    <div class="about-sticky reveal">
+      <div class="eyebrow">About</div>
+      <h2 class="sec-title">The Story Behind the Lens</h2>
+      <a href="https://www.youtube.com/@SiDOnWheelsArmy" target="_blank" class="btn">↗ Watch Channel</a>
+    </div>
+    <div class="about-body">
+      <p class="reveal d1">
+        I'm <strong>Siddharth Bhalla</strong>, an adventure filmmaker and self-taught video editor based in India. For over <strong>5 years</strong>, I've been behind the wheel and behind the edit bay — documenting raw, cinematic road trips across India's most challenging and stunning terrains.
+      </p>
+      <p class="reveal d2">
+        My channel <strong>SiD On Wheels</strong> isn't just travel content — it's episodic storytelling. Every video goes through a full post-production pipeline: footage culling, multi-track editing, color grading, sound design, and export optimization. I've done this <strong>566 times</strong>, consistently, independently, and on deadline.
+      </p>
+      <p class="reveal d3">
+        What sets me apart as an editor is an instinct for <strong>narrative pacing</strong> — knowing when to let a wide shot breathe and when to cut hard to keep energy alive. Clean timelines, fast turnarounds, and storytelling that holds attention.
+      </p>
+      <p class="reveal d4">
+        I specialize in <strong>travel &amp; adventure content, automotive films, cinematic vlogs, drone footage integration,</strong> and <strong>episodic series editing</strong>. Available for freelance projects and full-time roles.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWREEL -->
+<div class="showreel-wrap" id="work">
+  <div class="showreel-header reveal">
+    <div>
+      <div class="eyebrow">Featured Work</div>
+      <h2 class="sec-title">Showreel</h2>
+    </div>
+    <a href="https://www.youtube.com/@SiDOnWheelsArmy" target="_blank" class="btn btn-ghost">↗ Full Channel</a>
+  </div>
+  <div class="video-frame reveal d1">
+    <iframe
+      src="https://www.youtube.com/embed/onIpKnR4fKg?rel=0&modestbranding=1"
+      title="SiD On Wheels — Showreel"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+  <div class="channel-cta reveal d2">
+    <a href="https://www.youtube.com/@SiDOnWheelsArmy" target="_blank">↗ View all 566 videos on YouTube</a>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section class="section" id="skills">
+  <div class="eyebrow reveal">What I Do</div>
+  <h2 class="sec-title reveal d1">Core Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-card reveal" data-num="01">
+      <span class="sk-name">Video Editing</span>
+      <p class="sk-desc">End-to-end post-production — footage review to final export. Multi-track timelines, J/L-cuts, rhythm-based editing for maximum retention.</p>
+      <div class="tags">
+        <span class="tag">Premiere Pro</span><span class="tag">DaVinci Resolve</span><span class="tag">Final Cut</span>
+      </div>
+    </div>
+    <div class="skill-card reveal d1" data-num="02">
+      <span class="sk-name">Color Grading</span>
+      <p class="sk-desc">Cinematic LUT-based grading, node-based color correction, skin tone matching, consistent visual language across episodes.</p>
+      <div class="tags">
+        <span class="tag">DaVinci Resolve</span><span class="tag">LUTs</span><span class="tag">Log Footage</span>
+      </div>
+    </div>
+    <div class="skill-card reveal d2" data-num="03">
+      <span class="sk-name">Audio Mixing</span>
+      <p class="sk-desc">Sound design, music sync, dialogue cleanup, ambient layering — editing to the beat while keeping natural audio authentic.</p>
+      <div class="tags">
+        <span class="tag">Audition</span><span class="tag">Sound Design</span><span class="tag">Music Sync</span>
+      </div>
+    </div>
+    <div class="skill-card reveal d1" data-num="04">
+      <span class="sk-name">Drone Footage</span>
+      <p class="sk-desc">Integrating aerial footage into ground-level narratives. Motion matching, grading drone clips across camera profiles.</p>
+      <div class="tags">
+        <span class="tag">DJI Workflow</span><span class="tag">Aerial Edit</span><span class="tag">Multi-Cam</span>
+      </div>
+    </div>
+    <div class="skill-card reveal d2" data-num="05">
+      <span class="sk-name">Storytelling</span>
+      <p class="sk-desc">5 years of episodic series — narrative arc, audience hooks, pacing for engagement, emotional resonance through edit decisions.</p>
+      <div class="tags">
+        <span class="tag">Episodic Edit</span><span class="tag">Story Structure</span><span class="tag">Retention</span>
+      </div>
+    </div>
+    <div class="skill-card reveal d3" data-num="06">
+      <span class="sk-name">Thumbnails &amp; Graphics</span>
+      <p class="sk-desc">Eye-catching thumbnail design, lower thirds, title cards, and motion graphics for YouTube and social media.</p>
+      <div class="tags">
+        <span class="tag">Photoshop</span><span class="tag">Canva</span><span class="tag">Motion Text</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="section exp-section" id="experience">
+  <div class="eyebrow reveal">Background</div>
+  <h2 class="sec-title reveal d1">Experience</h2>
+  <div class="exp-list">
+    <div class="exp-row reveal">
+      <div class="exp-meta">
+        <span class="exp-date">2019 — Present</span>
+        <span class="exp-type">Self-Employed</span>
+      </div>
+      <div class="exp-dot"></div>
+      <div class="exp-body">
+        <div class="exp-role">Adventure Filmmaker &amp; Video Editor</div>
+        <span class="exp-company">SiD On Wheels — YouTube</span>
+        <ul class="exp-points">
+          <li>Produced, shot, and edited 566+ travel and adventure videos independently over 5 years.</li>
+          <li>Managed complete post-production pipeline: footage review, editing, color grading, audio mixing, and export.</li>
+          <li>Accumulated 8.81 lakh (881K) lifetime views with consistent weekly publishing schedule.</li>
+          <li>Built episodic travel series covering extreme road trips, off-road trails, and vehicle performance across India.</li>
+          <li>Integrated drone footage, multi-camera setups, and action cam footage into cinematic narratives.</li>
+          <li>Designed thumbnails, managed SEO metadata, grew a community of 2,500+ subscribers.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-row reveal d1">
+      <div class="exp-meta">
+        <span class="exp-date">Available Now</span>
+        <span class="exp-type">Freelance / Full-time</span>
+      </div>
+      <div class="exp-dot"></div>
+      <div class="exp-body">
+        <div class="exp-role">Freelance Video Editor</div>
+        <span class="exp-company">Brand &amp; Creator Collaborations</span>
+        <ul class="exp-points">
+          <li>Open to collaboration with travel brands, automobile companies, tourism boards, and content creators.</li>
+          <li>Available for short-form (Reels, Shorts, TikTok) and long-form (YouTube, documentary, corporate) editing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section" id="contact">
+  <div class="eyebrow reveal">Let's Work Together</div>
+  <h2 class="sec-title reveal d1">Get In Touch</h2>
+  <p class="contact-sub reveal d2">Available for freelance editing, full-time roles, and brand collaborations. I respond within 24 hours.</p>
+  <div class="contact-grid reveal d3">
+    <a class="cc" href="tel:+918090398717">
+      <span class="cc-type">Phone</span>
+      <span class="cc-val">+91 80903 98717</span>
+    </a>
+    <a class="cc" href="mailto:Siddharthbhalla07@gmail.com">
+      <span class="cc-type">Email</span>
+      <span class="cc-val">Siddharthbhalla07@gmail.com</span>
+    </a>
+    <a class="cc" href="https://instagram.com/SidOnWheels" target="_blank">
+      <span class="cc-type">Instagram</span>
+      <span class="cc-val">@SidOnWheels</span>
+    </a>
+    <a class="cc" href="https://www.youtube.com/@SiDOnWheelsArmy" target="_blank">
+      <span class="cc-type">YouTube</span>
+      <span class="cc-val">@SiDOnWheelsArmy</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Siddharth Bhalla</p>
+  <p>Man · Machine · Miles</p>
+</footer>
+
+<script>
+  const progress = document.getElementById('progress');
+  const nav = document.getElementById('nav');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    progress.style.width = (scrolled / maxScroll * 100) + '%';
+    nav.classList.toggle('scrolled', scrolled > 50);
+
+    let current = '';
+    document.querySelectorAll('section[id]').forEach(sec => {
+      if (scrolled >= sec.offsetTop - 140) current = sec.id;
+    });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }, { passive: true });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
